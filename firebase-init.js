@@ -13,3 +13,6 @@ firebase.initializeApp(firebaseConfig);
 if (firebase.analytics) {
   firebase.analytics();
 }
+
+
+const db = firebase.firestore();

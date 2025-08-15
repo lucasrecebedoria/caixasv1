@@ -241,3 +241,36 @@ function filterOlderAdmin(){
 function openAdminMat(mat){ adminViewMatricula = mat; renderMain(); }
 
 renderLogin();
+
+function salvarUsuario() {
+    const matricula = document.getElementById('matricula')?.value || '';
+    const nome = document.getElementById('nome')?.value || '';
+    const data = document.getElementById('data')?.value || '';
+    const folha = parseFloat(document.getElementById('folha')?.value || 0);
+    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
+    const obs = document.getElementById('obs')?.value || '';
+    const posObs = document.getElementById('posObsField')?.value || '';
+
+    if (!matricula) {
+        alert("Matrícula é obrigatória.");
+        return;
+    }
+
+    db.collection("usuarios").doc(matricula).set({
+        matricula: matricula,
+        nome: nome,
+        data: data,
+        folha: folha,
+        dinheiro: dinheiro,
+        obs: obs,
+        posObs: posObs,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        alert("Usuário salvo com sucesso!");
+    })
+    .catch((error) => {
+        console.error("Erro ao salvar usuário: ", error);
+        alert("Erro ao salvar. Verifique o console.");
+    });
+}
