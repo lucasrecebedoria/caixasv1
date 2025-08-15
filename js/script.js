@@ -320,20 +320,7 @@ function salvarUsuario() {
 }
 
 
-function cadastrarUsuario() {
-    const matricula = document.getElementById('matricula')?.value || '';
-    const nome = document.getElementById('nome')?.value || '';
-    const senha = document.getElementById('senha')?.value || '';
-    const data = document.getElementById('data')?.value || '';
-    const folha = parseFloat(document.getElementById('folha')?.value || 0);
-    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
-    const obs = document.getElementById('obs')?.value || '';
-    const posObs = document.getElementById('posObsField')?.value || '';
 
-    if (!matricula || !senha) {
-        alert("Matrícula e senha são obrigatórias.");
-        return;
-    }
 
     db.collection("usuarios").doc(matricula).set({
         matricula: matricula,
@@ -352,5 +339,47 @@ function cadastrarUsuario() {
     .catch((error) => {
         console.error("Erro ao cadastrar usuário: ", error);
         alert("Erro ao cadastrar. Verifique o console.");
+    });
+}
+
+
+function cadastrarUsuario() {
+    console.log("[DEBUG] Função cadastrarUsuario chamada");
+
+    const matricula = document.getElementById('matricula')?.value || '';
+    const nome = document.getElementById('nome')?.value || '';
+    const senha = document.getElementById('senha')?.value || '';
+    const data = document.getElementById('data')?.value || '';
+    const folha = parseFloat(document.getElementById('folha')?.value || 0);
+    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
+    const obs = document.getElementById('obs')?.value || '';
+    const posObs = document.getElementById('posObsField')?.value || '';
+
+    if (!matricula || !senha) {
+        alert("Matrícula e senha são obrigatórias.");
+        console.warn("[DEBUG] Matrícula ou senha não preenchida");
+        return;
+    }
+
+    console.log("[DEBUG] Tentando salvar no Firestore:", {matricula, nome, senha, data, folha, dinheiro, obs, posObs});
+
+    db.collection("usuarios").doc(matricula).set({
+        matricula: matricula,
+        nome: nome,
+        senha: senha,
+        data: data,
+        folha: folha,
+        dinheiro: dinheiro,
+        obs: obs,
+        posObs: posObs,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true })
+    .then(() => {
+        console.log("[DEBUG] Usuário cadastrado/atualizado com sucesso no Firestore");
+        alert("Usuário cadastrado/atualizado com sucesso!");
+    })
+    .catch((error) => {
+        console.error("[DEBUG] Erro ao cadastrar usuário:", error);
+        alert("Erro ao cadastrar. Veja o console para detalhes.");
     });
 }
