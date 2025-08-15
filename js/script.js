@@ -1,3 +1,5 @@
+function $id(id){return document.getElementById(id);}
+function val(id){var el=document.getElementById(id);return el?el.value:'';}
 var usuarioLogadoMatricula = null;
 const app = document.getElementById('app');
 let currentUser = null;
@@ -49,7 +51,7 @@ function register(){
             if (dados.senha === senha) {
             usuarioLogadoMatricula = matricula;
                 alert("Login realizado com sucesso!");
-                renderMain(); // mantém o fluxo atual
+                if (typeof renderMain === 'function') { renderMain(); }; // mantém o fluxo atual
             } else {
                 alert("Senha incorreta.");
             }
@@ -58,7 +60,7 @@ function register(){
             console.error("Erro ao buscar usuário:", error);
             alert("Erro no login.");
         });
-}
+// REMOVIDO ERRO: }
 
 function logout(){ currentUser=null; renderLogin(); }
 function changePassword(){
@@ -132,7 +134,7 @@ function addObsImages(idx){
     reader.onload = e=>{
       r.posObs.images.push(e.target.result);
       if(--pending===0){ saveReports();
-        closeObsPopup(); openObsPopup(idx); renderMain();
+        closeObsPopup(); openObsPopup(idx); if (typeof renderMain === 'function') { renderMain(); };
       }};
     reader.readAsDataURL(file);
   });
@@ -140,12 +142,12 @@ function addObsImages(idx){
 function deleteObsImage(idx, j){
   const r = reports[idx]; if(!r.posObs?.images) return;
   r.posObs.images.splice(j,1);
-  saveReports(); closeObsPopup(); openObsPopup(idx); renderMain();
+  saveReports(); closeObsPopup(); openObsPopup(idx); if (typeof renderMain === 'function') { renderMain(); };
 }
 function saveObs(idx){
   const r = reports[idx];
   r.posObs.text = document.getElementById('posObsField').value;
-  saveReports(); alert('Pós conferência salva!'); renderMain();
+  saveReports(); alert('Pós conferência salva!'); if (typeof renderMain === 'function') { renderMain(); };
 }
 
 // CRUD
@@ -158,16 +160,16 @@ function addReport(){
   const sf = (dinheiro - folha).toFixed(2);
   const matricula = document.getElementById('userSelect') ? document.getElementById('userSelect').value : currentUser.matricula;
   reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]}});
-  saveReports(); renderMain();
+  saveReports(); if (typeof renderMain === 'function') { renderMain(); };
 }
 function deleteReport(i){
   if(!confirm("Excluir este relatório?")) return;
-  reports.splice(i,1); saveReports(); renderMain();
+  reports.splice(i,1); saveReports(); if (typeof renderMain === 'function') { renderMain(); };
 }
 function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle('hidden'); }
 
 // List
-function renderMain(){
+const anonFunc = functionif (typeof renderMain === 'function') { renderMain(); }{
   const isAdmin = admins.includes(currentUser.matricula);
   let top = `<header><h1>Relatório de Diferenças <span class="badge">${isAdmin?'Admin':'Usuário'}</span></h1>
     <div><span class="small">${currentUser.nome} (${currentUser.matricula})</span>
@@ -202,7 +204,7 @@ function renderMain(){
       content += `
         <div class="card">
           <div class="row">
-            <button onclick="adminViewMatricula=null; renderMain()">← Voltar</button>
+            <button onclick="adminViewMatricula=null; if (typeof renderMain === 'function') { renderMain(); }">← Voltar</button>
             <div class="badge">Matrícula ${adminViewMatricula}</div>
           </div>
           <h3>Últimos 20 relatórios</h3>
@@ -255,7 +257,7 @@ function filterOlderAdmin(){
                        .sort(byDateDesc).slice(20);
   document.getElementById('olderAdmin').innerHTML = renderReports(older, true, true);
 }
-function openAdminMat(mat){ adminViewMatricula = mat; renderMain(); }
+function openAdminMat(mat){ adminViewMatricula = mat; if (typeof renderMain === 'function') { renderMain(); }; }
 
 renderLogin();
 
@@ -313,7 +315,7 @@ function salvarUsuario() {
         console.error("Erro ao cadastrar usuário: ", error);
         alert("Erro ao cadastrar. Verifique o console.");
     });
-}
+// REMOVIDO ERRO: }
 
 
 function cadastrarUsuario() {
@@ -405,9 +407,9 @@ function login() {
                     }
                 }
             }
-            // Aqui você pode chamar renderMain() ou outra função para carregar o sistema
+            // Aqui você pode chamar if (typeof renderMain === 'function') { renderMain(); } ou outra função para carregar o sistema
             if (typeof renderMain === "function") {
-                renderMain();
+                if (typeof renderMain === 'function') { renderMain(); };
             }
         } else {
             console.warn("[DEBUG] Senha incorreta para", matricula);
