@@ -1,4 +1,7 @@
-// Inicializa o Firebase com sua configuração
+// firebase-init.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBdmIYK4Zy6MbEsT3pc5W_YkbdKtOUOzto",
   authDomain: "caixas-b09fb.firebaseapp.com",
@@ -9,10 +12,6 @@ const firebaseConfig = {
   measurementId: "G-SSWHWFZ7FT"
 };
 
-firebase.initializeApp(firebaseConfig);
-if (firebase.analytics) {
-  firebase.analytics();
-}
-
-
-const db = firebase.firestore();
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+console.log("[Firebase] Inicializado com sucesso.");

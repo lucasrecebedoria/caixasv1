@@ -1,6 +1,3 @@
-function $id(id){return document.getElementById(id);}
-function val(id){var el=document.getElementById(id);return el?el.value:'';}
-var usuarioLogadoMatricula = null;
 const app = document.getElementById('app');
 let currentUser = null;
 let reports = JSON.parse(localStorage.getItem('reports_v8') || '[]');
@@ -39,7 +36,14 @@ function register(){
   saveUsers(); alert("Usuário cadastrado!"); renderLogin();
 }
 
+function login() {
+    const matricula = document.getElementById('matricula')?.value || '';
+    const senha = document.getElementById('senha')?.value || '';
 
+    if (!matricula || !senha) {
+        alert("Preencha matrícula e senha.");
+        return;
+    }
 
     db.collection("usuarios").doc(matricula).get()
         .then(doc => {
@@ -49,9 +53,8 @@ function register(){
             }
             const dados = doc.data();
             if (dados.senha === senha) {
-            usuarioLogadoMatricula = matricula;
                 alert("Login realizado com sucesso!");
-if (typeof renderMain === 'function') { renderMain(); }
+                renderMain(); // mantém o fluxo atual
             } else {
                 alert("Senha incorreta.");
             }
@@ -60,8 +63,7 @@ if (typeof renderMain === 'function') { renderMain(); }
             console.error("Erro ao buscar usuário:", error);
             alert("Erro no login.");
         });
-{ // inserted opening brace
-// REMOVIDO ERRO: /*}*/
+}
 
 function logout(){ currentUser=null; renderLogin(); }
 function changePassword(){
@@ -135,20 +137,20 @@ function addObsImages(idx){
     reader.onload = e=>{
       r.posObs.images.push(e.target.result);
       if(--pending===0){ saveReports();
-if (typeof renderMain === 'function') { renderMain(); }
-      };
+        closeObsPopup(); openObsPopup(idx); renderMain();
+      }};
     reader.readAsDataURL(file);
   });
 }
 function deleteObsImage(idx, j){
   const r = reports[idx]; if(!r.posObs?.images) return;
   r.posObs.images.splice(j,1);
-if (typeof renderMain === 'function') { renderMain(); }
+  saveReports(); closeObsPopup(); openObsPopup(idx); renderMain();
 }
 function saveObs(idx){
   const r = reports[idx];
   r.posObs.text = document.getElementById('posObsField').value;
-if (typeof renderMain === 'function') { renderMain(); }
+  saveReports(); alert('Pós conferência salva!'); renderMain();
 }
 
 // CRUD
@@ -159,22 +161,18 @@ function addReport(){
   if(isNaN(folha)||isNaN(dinheiro) || !data) return alert("Preencha data e valores numéricos.");
   const obs = document.getElementById('obs').value;
   const sf = (dinheiro - folha).toFixed(2);
-}
-}
   const matricula = document.getElementById('userSelect') ? document.getElementById('userSelect').value : currentUser.matricula;
-  reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]});
-if (typeof renderMain === 'function') { renderMain(); }
+  reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]}});
+  saveReports(); renderMain();
 }
 function deleteReport(i){
   if(!confirm("Excluir este relatório?")) return;
-if (typeof renderMain === 'function') { renderMain(); }
+  reports.splice(i,1); saveReports(); renderMain();
 }
 function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle('hidden'); }
 
 // List
-const anonFunc = function() {
-    if (typeof renderMain === 'function') { renderMain(); }
-};
+function renderMain(){
   const isAdmin = admins.includes(currentUser.matricula);
   let top = `<header><h1>Relatório de Diferenças <span class="badge">${isAdmin?'Admin':'Usuário'}</span></h1>
     <div><span class="small">${currentUser.nome} (${currentUser.matricula})</span>
@@ -209,8 +207,7 @@ const anonFunc = function() {
       content += `
         <div class="card">
           <div class="row">
-            <button onclick="adminViewMatricula=null;
-if (typeof renderMain === 'function') { renderMain(); }">← Voltar</button>
+            <button onclick="adminViewMatricula=null; renderMain()">← Voltar</button>
             <div class="badge">Matrícula ${adminViewMatricula}</div>
           </div>
           <h3>Últimos 20 relatórios</h3>
@@ -232,6 +229,7 @@ if (typeof renderMain === 'function') { renderMain(); }">← Voltar</button>
   }
   content += `</div>`;
   app.innerHTML = top + content;
+}
 function renderReports(list, asAdmin, startMinimized=false){
   if(!list.length) return '<span class="small">Sem relatórios.</span>';
   return list.map(r=>{
@@ -262,7 +260,7 @@ function filterOlderAdmin(){
                        .sort(byDateDesc).slice(20);
   document.getElementById('olderAdmin').innerHTML = renderReports(older, true, true);
 }
-if (typeof renderMain === 'function') { renderMain(); }
+function openAdminMat(mat){ adminViewMatricula = mat; renderMain(); }
 
 renderLogin();
 
@@ -300,7 +298,20 @@ function salvarUsuario() {
 }
 
 
+function cadastrarUsuario() {
+    const matricula = document.getElementById('matricula')?.value || '';
+    const nome = document.getElementById('nome')?.value || '';
+    const senha = document.getElementById('senha')?.value || '';
+    const data = document.getElementById('data')?.value || '';
+    const folha = parseFloat(document.getElementById('folha')?.value || 0);
+    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
+    const obs = document.getElementById('obs')?.value || '';
+    const posObs = document.getElementById('posObsField')?.value || '';
 
+    if (!matricula || !senha) {
+        alert("Matrícula e senha são obrigatórias.");
+        return;
+    }
 
     db.collection("usuarios").doc(matricula).set({
         matricula: matricula,
@@ -319,145 +330,5 @@ function salvarUsuario() {
     .catch((error) => {
         console.error("Erro ao cadastrar usuário: ", error);
         alert("Erro ao cadastrar. Verifique o console.");
-{ // inserted opening brace
-    });
-// REMOVIDO ERRO: /*}*/
-
-
-function cadastrarUsuario() {
-    console.log("[DEBUG] Função cadastrarUsuario chamada");
-
-    if (typeof db === "undefined") {
-        console.error("[DEBUG] Firestore não está inicializado.");
-        alert("Erro: Firestore não carregou.");
-        return;
-    }
-
-    var matricula = document.getElementById('matricula') ? document.getElementById('matricula').value.trim() : '';
-    var nome = document.getElementById('nome') ? document.getElementById('nome').value.trim() : '';
-    var senha = document.getElementById('senha') ? document.getElementById('senha').value.trim() : '';
-
-    if (!matricula || !senha) {
-        alert("Matrícula e senha são obrigatórias.");
-        return;
-    }
-
-    var payload = {
-        matricula: matricula,
-        nome: nome,
-        senha: senha,
-        criadoEm: (firebase && firebase.firestore && firebase.firestore.FieldValue) ? firebase.firestore.FieldValue.serverTimestamp() : null
-    };
-
-    console.log("[DEBUG] Salvando usuário no Firestore:", payload);
-
-    db.collection("usuarios").doc(matricula).set(payload, { merge: true })
-    .then(() => {
-        console.log("[DEBUG] Usuário cadastrado/atualizado com sucesso!");
-        alert("Usuário cadastrado/atualizado com sucesso!");
-        if (typeof carregarUsuarios === 'function') { carregarUsuarios(); }
-    })
-    .catch((error) => {
-        console.error("[DEBUG] Erro ao salvar usuário:", error);
-        alert("Erro ao cadastrar. Veja o console para detalhes.");
     });
 }
-
-
-function login() {
-    console.log("[DEBUG] Função login chamada");
-
-    if (typeof db === "undefined") {
-        console.error("[DEBUG] Firestore não está inicializado.");
-        alert("Erro: Firestore não carregou.");
-        return;
-    }
-
-    var matricula = document.getElementById('matricula') ? document.getElementById('matricula').value.trim() : '';
-    var senha = document.getElementById('senha') ? document.getElementById('senha').value.trim() : '';
-
-    if (!matricula || !senha) {
-        alert("Matrícula e senha são obrigatórias.");
-        return;
-    }
-
-    db.collection("usuarios").doc(matricula).get()
-    .then((doc) => {
-        if (!doc.exists) {
-            console.warn("[DEBUG] Usuário não encontrado:", matricula);
-            alert("Usuário não encontrado.");
-            return;
-        }
-        var dados = doc.data();
-        console.log("[DEBUG] Dados do usuário encontrado:", dados);
-
-        if (dados.senha === senha) {
-            usuarioLogadoMatricula = matricula;
-            console.log("[DEBUG] Login bem-sucedido para", matricula);
-            alert("Login bem-sucedido!");
-            var sel = document.getElementById('userSelect');
-            if (sel) {
-                for (var i = 0; i < sel.options.length; i++) {
-                    if (sel.options[i].value === matricula) {
-                        sel.selectedIndex = i;
-                        break;
-                    }
-                }
-            }
-            var sel = document.getElementById('userSelect');
-            if (sel) {
-                for (var i = 0; i < sel.options.length; i++) {
-                    if (sel.options[i].value === matricula) {
-                        sel.selectedIndex = i;
-                        break;
-                    }
-                }
-            }
-// Aqui você pode chamar;
-if (typeof renderMain === 'function') { renderMain(); }
-if (typeof renderMain === 'function') { renderMain(); }
-if (typeof renderMain === 'function') { renderMain(); }
-            }
-        } else {
-            console.warn("[DEBUG] Senha incorreta para", matricula);
-            alert("Senha incorreta.");
-        }
-    })
-    .catch((error) => {
-        console.error("[DEBUG] Erro ao buscar usuário:", error);
-        alert("Erro ao tentar fazer login. Veja o console para detalhes.");
-    });
-
-
-function carregarUsuarios() {
-    console.log("[DEBUG] Função carregarUsuarios chamada");
-
-    if (typeof db === "undefined") {
-        console.error("[DEBUG] Firestore não está inicializado.");
-        return;
-    }
-
-    var select = document.getElementById('userSelect');
-    if (!select) {
-        console.warn("[DEBUG] Elemento #userSelect não encontrado.");
-        return;
-    }
-
-    db.collection("usuarios").orderBy("matricula").get()
-    .then((querySnapshot) => {
-        select.innerHTML = "";
-        querySnapshot.forEach((doc) => {
-            var dados = doc.data();
-            var option = document.createElement("option");
-            option.value = dados.matricula;
-            option.textContent = dados.matricula + " - " + (dados.nome || "");
-            select.appendChild(option);
-        });
-        console.log("[DEBUG] Lista de usuários carregada:", select.options.length);
-    })
-    .catch((error) => {
-        console.error("[DEBUG] Erro ao carregar usuários:", error);
-    });
-}
-
-window.onload = function(){ carregarUsuarios(); };
