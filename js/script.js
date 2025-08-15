@@ -36,9 +36,7 @@ function register(){
   saveUsers(); alert("Usuário cadastrado!"); renderLogin();
 }
 
-
 function login() {
-    console.log("Usando login do Firestore");
     const matricula = document.getElementById('matricula')?.value || '';
     const senha = document.getElementById('senha')?.value || '';
 
@@ -46,26 +44,6 @@ function login() {
         alert("Preencha matrícula e senha.");
         return;
     }
-
-    db.collection("usuarios").doc(matricula).get()
-        .then(doc => {
-            if (!doc.exists) {
-                alert("Usuário não encontrado.");
-                return;
-            }
-            const dados = doc.data();
-            if (dados.senha === senha) {
-                alert("Login realizado com sucesso!");
-                renderMain();
-            } else {
-                alert("Senha incorreta.");
-            }
-        })
-        .catch(error => {
-            console.error("Erro ao buscar usuário:", error);
-            alert("Erro no login.");
-        });
-}
 
     db.collection("usuarios").doc(matricula).get()
         .then(doc => {
