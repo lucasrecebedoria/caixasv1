@@ -36,14 +36,7 @@ function register(){
   saveUsers(); alert("Usuário cadastrado!"); renderLogin();
 }
 
-function login() {
-    const matricula = document.getElementById('matricula')?.value || '';
-    const senha = document.getElementById('senha')?.value || '';
 
-    if (!matricula || !senha) {
-        alert("Preencha matrícula e senha.");
-        return;
-    }
 
     db.collection("usuarios").doc(matricula).get()
         .then(doc => {
@@ -298,20 +291,7 @@ function salvarUsuario() {
 }
 
 
-function cadastrarUsuario() {
-    const matricula = document.getElementById('matricula')?.value || '';
-    const nome = document.getElementById('nome')?.value || '';
-    const senha = document.getElementById('senha')?.value || '';
-    const data = document.getElementById('data')?.value || '';
-    const folha = parseFloat(document.getElementById('folha')?.value || 0);
-    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
-    const obs = document.getElementById('obs')?.value || '';
-    const posObs = document.getElementById('posObsField')?.value || '';
 
-    if (!matricula || !senha) {
-        alert("Matrícula e senha são obrigatórias.");
-        return;
-    }
 
     db.collection("usuarios").doc(matricula).set({
         matricula: matricula,
@@ -332,3 +312,132 @@ function cadastrarUsuario() {
         alert("Erro ao cadastrar. Verifique o console.");
     });
 }
+
+
+function cadastrarUsuario() {
+    console.log("[DEBUG] Função cadastrarUsuario chamada");
+
+    if (typeof db === "undefined") {
+        console.error("[DEBUG] Firestore não está inicializado.");
+        alert("Erro: Firestore não carregou.");
+        return;
+    }
+
+    var matricula = document.getElementById('matricula') ? document.getElementById('matricula').value.trim() : '';
+    var nome = document.getElementById('nome') ? document.getElementById('nome').value.trim() : '';
+    var senha = document.getElementById('senha') ? document.getElementById('senha').value.trim() : '';
+
+    if (!matricula || !senha) {
+        alert("Matrícula e senha são obrigatórias.");
+        return;
+    }
+
+    var payload = {
+        matricula: matricula,
+        nome: nome,
+        senha: senha,
+        criadoEm: (firebase && firebase.firestore && firebase.firestore.FieldValue) ? firebase.firestore.FieldValue.serverTimestamp() : null
+    };
+
+    console.log("[DEBUG] Salvando usuário no Firestore:", payload);
+
+    db.collection("usuarios").doc(matricula).set(payload, { merge: true })
+    .then(() => {
+        console.log("[DEBUG] Usuário cadastrado/atualizado com sucesso!");
+        alert("Usuário cadastrado/atualizado com sucesso!");
+        if (typeof carregarUsuarios === 'function') { carregarUsuarios(); }
+    })
+    .catch((error) => {
+        console.error("[DEBUG] Erro ao salvar usuário:", error);
+        alert("Erro ao cadastrar. Veja o console para detalhes.");
+    });
+}
+
+
+function login() {
+    console.log("[DEBUG] Função login chamada");
+
+    if (typeof db === "undefined") {
+        console.error("[DEBUG] Firestore não está inicializado.");
+        alert("Erro: Firestore não carregou.");
+        return;
+    }
+
+    var matricula = document.getElementById('matricula') ? document.getElementById('matricula').value.trim() : '';
+    var senha = document.getElementById('senha') ? document.getElementById('senha').value.trim() : '';
+
+    if (!matricula || !senha) {
+        alert("Matrícula e senha são obrigatórias.");
+        return;
+    }
+
+    db.collection("usuarios").doc(matricula).get()
+    .then((doc) => {
+        if (!doc.exists) {
+            console.warn("[DEBUG] Usuário não encontrado:", matricula);
+            alert("Usuário não encontrado.");
+            return;
+        }
+        var dados = doc.data();
+        console.log("[DEBUG] Dados do usuário encontrado:", dados);
+
+        if (dados.senha === senha) {
+            console.log("[DEBUG] Login bem-sucedido para", matricula);
+            alert("Login bem-sucedido!");
+            var sel = document.getElementById('userSelect');
+            if (sel) {
+                for (var i = 0; i < sel.options.length; i++) {
+                    if (sel.options[i].value === matricula) {
+                        sel.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            // Aqui você pode chamar renderMain() ou outra função para carregar o sistema
+            if (typeof renderMain === "function") {
+                renderMain();
+            }
+        } else {
+            console.warn("[DEBUG] Senha incorreta para", matricula);
+            alert("Senha incorreta.");
+        }
+    })
+    .catch((error) => {
+        console.error("[DEBUG] Erro ao buscar usuário:", error);
+        alert("Erro ao tentar fazer login. Veja o console para detalhes.");
+    });
+}
+
+
+function carregarUsuarios() {
+    console.log("[DEBUG] Função carregarUsuarios chamada");
+
+    if (typeof db === "undefined") {
+        console.error("[DEBUG] Firestore não está inicializado.");
+        return;
+    }
+
+    var select = document.getElementById('userSelect');
+    if (!select) {
+        console.warn("[DEBUG] Elemento #userSelect não encontrado.");
+        return;
+    }
+
+    db.collection("usuarios").orderBy("matricula").get()
+    .then((querySnapshot) => {
+        select.innerHTML = "";
+        querySnapshot.forEach((doc) => {
+            var dados = doc.data();
+            var option = document.createElement("option");
+            option.value = dados.matricula;
+            option.textContent = dados.matricula + " - " + (dados.nome || "");
+            select.appendChild(option);
+        });
+        console.log("[DEBUG] Lista de usuários carregada:", select.options.length);
+    })
+    .catch((error) => {
+        console.error("[DEBUG] Erro ao carregar usuários:", error);
+    });
+}
+
+window.onload = function(){ carregarUsuarios(); };
