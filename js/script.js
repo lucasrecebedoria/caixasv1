@@ -60,7 +60,8 @@ if (typeof renderMain === 'function') { renderMain(); }
             console.error("Erro ao buscar usuário:", error);
             alert("Erro no login.");
         });
-// REMOVIDO ERRO: }
+{ // inserted opening brace
+// REMOVIDO ERRO: /*}*/
 
 function logout(){ currentUser=null; renderLogin(); }
 function changePassword(){
@@ -135,7 +136,7 @@ function addObsImages(idx){
       r.posObs.images.push(e.target.result);
       if(--pending===0){ saveReports();
 if (typeof renderMain === 'function') { renderMain(); }
-      }};
+      };
     reader.readAsDataURL(file);
   });
 }
@@ -158,8 +159,10 @@ function addReport(){
   if(isNaN(folha)||isNaN(dinheiro) || !data) return alert("Preencha data e valores numéricos.");
   const obs = document.getElementById('obs').value;
   const sf = (dinheiro - folha).toFixed(2);
+}
+}
   const matricula = document.getElementById('userSelect') ? document.getElementById('userSelect').value : currentUser.matricula;
-  reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]}});
+  reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]});
 if (typeof renderMain === 'function') { renderMain(); }
 }
 function deleteReport(i){
@@ -171,7 +174,7 @@ function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle
 // List
 const anonFunc = function() {
     if (typeof renderMain === 'function') { renderMain(); }
-}
+};
   const isAdmin = admins.includes(currentUser.matricula);
   let top = `<header><h1>Relatório de Diferenças <span class="badge">${isAdmin?'Admin':'Usuário'}</span></h1>
     <div><span class="small">${currentUser.nome} (${currentUser.matricula})</span>
@@ -206,7 +209,8 @@ const anonFunc = function() {
       content += `
         <div class="card">
           <div class="row">
-            <button onclick="adminViewMatricula=null; if (typeof renderMain === 'function') { renderMain(); }">← Voltar</button>
+            <button onclick="adminViewMatricula=null;
+if (typeof renderMain === 'function') { renderMain(); }">← Voltar</button>
             <div class="badge">Matrícula ${adminViewMatricula}</div>
           </div>
           <h3>Últimos 20 relatórios</h3>
@@ -228,7 +232,6 @@ const anonFunc = function() {
   }
   content += `</div>`;
   app.innerHTML = top + content;
-}
 function renderReports(list, asAdmin, startMinimized=false){
   if(!list.length) return '<span class="small">Sem relatórios.</span>';
   return list.map(r=>{
@@ -316,8 +319,9 @@ function salvarUsuario() {
     .catch((error) => {
         console.error("Erro ao cadastrar usuário: ", error);
         alert("Erro ao cadastrar. Verifique o console.");
+{ // inserted opening brace
     });
-// REMOVIDO ERRO: }
+// REMOVIDO ERRO: /*}*/
 
 
 function cadastrarUsuario() {
@@ -423,7 +427,6 @@ if (typeof renderMain === 'function') { renderMain(); }
         console.error("[DEBUG] Erro ao buscar usuário:", error);
         alert("Erro ao tentar fazer login. Veja o console para detalhes.");
     });
-}
 
 
 function carregarUsuarios() {
