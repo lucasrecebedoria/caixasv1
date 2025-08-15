@@ -1,6 +1,8 @@
 const app = document.getElementById('app');
 let currentUser = null;
 let reports = JSON.parse(localStorage.getItem('reports_v8') || '[]');
+function $id(id){ return document.getElementById(id); }
+function val(id){ var el = document.getElementById(id); return el ? el.value : ''; }
 let users = JSON.parse(localStorage.getItem('users_v6') || '[]');
 const admins = ["0001","admin","6266","70029","4144"];
 let adminViewMatricula = null;
@@ -39,8 +41,8 @@ function register(){
 
 function login() {
     console.log("Usando login do Firestore");
-    const matricula = document.getElementById('matricula')?.value || '';
-    const senha = document.getElementById('senha')?.value || '';
+    const matricula = val('matricula') || '';
+    const senha = val('senha') || '';
 
     if (!matricula || !senha) {
         alert("Preencha matrícula e senha.");
@@ -91,7 +93,7 @@ function logout(){ currentUser=null; renderLogin(); }
 function changePassword(){
   const nova = prompt("Digite a nova senha:");
   if(!nova) return;
-  users = users.map(u=>u.matricula===currentUser.matricula? {...u,senha:nova}:u);
+  users = users.map(function(u){ if(u.matricula===currentUser.matricula){ u.senha = nova; } return u; });
   saveUsers(); alert("Senha alterada!");
 }
 
@@ -146,10 +148,10 @@ function openObsPopup(idx){
 
   document.body.appendChild(overlay); document.body.appendChild(popup);
 }
-function closeObsPopup(){ document.getElementById('overlayObs')?.remove(); document.getElementById('popupObs')?.remove(); }
+function closeObsPopup(){ (function(el){ if(el) el.remove(); })(document.getElementById('overlayObs')); (function(el){ if(el) el.remove(); })(document.getElementById('popupObs')); }
 function addObsImages(idx){
   const input = document.getElementById('imgInput');
-  if(!input || !input.files?.length) return;
+  if(!input || !input.files && input.files.length) return;
   const r = reports[idx];
   r.posObs.images = r.posObs.images || [];
   const files = Array.from(input.files);
@@ -165,7 +167,7 @@ function addObsImages(idx){
   });
 }
 function deleteObsImage(idx, j){
-  const r = reports[idx]; if(!r.posObs?.images) return;
+  const r = reports[idx]; if(!(r.posObs && r.posObs.images)) return;
   r.posObs.images.splice(j,1);
   saveReports(); closeObsPopup(); openObsPopup(idx); renderMain();
 }
@@ -191,7 +193,7 @@ function deleteReport(i){
   if(!confirm("Excluir este relatório?")) return;
   reports.splice(i,1); saveReports(); renderMain();
 }
-function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle('hidden'); }
+function toggleReport(i){ document.getElementById('report-'+i).classList.toggle('hidden'); }
 
 // List
 function renderMain(){
@@ -287,13 +289,13 @@ function openAdminMat(mat){ adminViewMatricula = mat; renderMain(); }
 renderLogin();
 
 function salvarUsuario() {
-    const matricula = document.getElementById('matricula')?.value || '';
-    const nome = document.getElementById('nome')?.value || '';
-    const data = document.getElementById('data')?.value || '';
-    const folha = parseFloat(document.getElementById('folha')?.value || 0);
-    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
-    const obs = document.getElementById('obs')?.value || '';
-    const posObs = document.getElementById('posObsField')?.value || '';
+    const matricula = val('matricula') || '';
+    const nome = val('nome') || '';
+    const data = val('data') || '';
+    const folha = parseFloat(val('folha') || 0);
+    const dinheiro = parseFloat(val('dinheiro') || 0);
+    const obs = val('obs') || '';
+    const posObs = val('posObsField') || '';
 
     if (!matricula) {
         alert("Matrícula é obrigatória.");
@@ -352,14 +354,14 @@ function cadastrarUsuario() {
         return;
     }
 
-    const matricula = document.getElementById('matricula')?.value || '';
-    const nome = document.getElementById('nome')?.value || '';
-    const senha = document.getElementById('senha')?.value || '';
-    const data = document.getElementById('data')?.value || '';
-    const folha = parseFloat(document.getElementById('folha')?.value || 0);
-    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
-    const obs = document.getElementById('obs')?.value || '';
-    const posObs = document.getElementById('posObsField')?.value || '';
+    const matricula = val('matricula') || '';
+    const nome = val('nome') || '';
+    const senha = val('senha') || '';
+    const data = val('data') || '';
+    const folha = parseFloat(val('folha') || 0);
+    const dinheiro = parseFloat(val('dinheiro') || 0);
+    const obs = val('obs') || '';
+    const posObs = val('posObsField') || '';
 
     if (!matricula || !senha) {
         alert("Matrícula e senha são obrigatórias.");
