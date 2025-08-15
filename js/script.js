@@ -169,7 +169,7 @@ function deleteReport(i){
 function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle('hidden'); }
 
 // List
-const anonFunc = functionif (typeof renderMain === 'function') { renderMain(); }{
+const anonFunc = function() { if (typeof renderMain === 'function') { renderMain(); }
   const isAdmin = admins.includes(currentUser.matricula);
   let top = `<header><h1>Relatório de Diferenças <span class="badge">${isAdmin?'Admin':'Usuário'}</span></h1>
     <div><span class="small">${currentUser.nome} (${currentUser.matricula})</span>
