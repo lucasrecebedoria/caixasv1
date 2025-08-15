@@ -346,6 +346,12 @@ function salvarUsuario() {
 function cadastrarUsuario() {
     console.log("[DEBUG] Função cadastrarUsuario chamada");
 
+    if (typeof db === "undefined") {
+        console.error("[DEBUG] Firestore não está inicializado.");
+        alert("Erro: Firestore não carregou.");
+        return;
+    }
+
     const matricula = document.getElementById('matricula')?.value || '';
     const nome = document.getElementById('nome')?.value || '';
     const senha = document.getElementById('senha')?.value || '';
@@ -363,7 +369,7 @@ function cadastrarUsuario() {
 
     console.log("[DEBUG] Tentando salvar no Firestore:", {matricula, nome, senha, data, folha, dinheiro, obs, posObs});
 
-    db.collection("usuarios").doc(matricula).set({
+    const payload = {
         matricula: matricula,
         nome: nome,
         senha: senha,
@@ -371,9 +377,14 @@ function cadastrarUsuario() {
         folha: folha,
         dinheiro: dinheiro,
         obs: obs,
-        posObs: posObs,
-        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true })
+        posObs: posObs
+    };
+
+    if (typeof firebase !== "undefined" && firebase.firestore && firebase.firestore.FieldValue) {
+        payload.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+    }
+
+    db.collection("usuarios").doc(matricula).set(payload, { merge: true })
     .then(() => {
         console.log("[DEBUG] Usuário cadastrado/atualizado com sucesso no Firestore");
         alert("Usuário cadastrado/atualizado com sucesso!");
