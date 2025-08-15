@@ -51,7 +51,7 @@ function register(){
             if (dados.senha === senha) {
             usuarioLogadoMatricula = matricula;
                 alert("Login realizado com sucesso!");
-                if (typeof renderMain === 'function') { renderMain(); }; // mantém o fluxo atual
+if (typeof renderMain === 'function') { renderMain(); }
             } else {
                 alert("Senha incorreta.");
             }
@@ -134,7 +134,7 @@ function addObsImages(idx){
     reader.onload = e=>{
       r.posObs.images.push(e.target.result);
       if(--pending===0){ saveReports();
-        closeObsPopup(); openObsPopup(idx); if (typeof renderMain === 'function') { renderMain(); };
+if (typeof renderMain === 'function') { renderMain(); }
       }};
     reader.readAsDataURL(file);
   });
@@ -142,12 +142,12 @@ function addObsImages(idx){
 function deleteObsImage(idx, j){
   const r = reports[idx]; if(!r.posObs?.images) return;
   r.posObs.images.splice(j,1);
-  saveReports(); closeObsPopup(); openObsPopup(idx); if (typeof renderMain === 'function') { renderMain(); };
+if (typeof renderMain === 'function') { renderMain(); }
 }
 function saveObs(idx){
   const r = reports[idx];
   r.posObs.text = document.getElementById('posObsField').value;
-  saveReports(); alert('Pós conferência salva!'); if (typeof renderMain === 'function') { renderMain(); };
+if (typeof renderMain === 'function') { renderMain(); }
 }
 
 // CRUD
@@ -160,16 +160,18 @@ function addReport(){
   const sf = (dinheiro - folha).toFixed(2);
   const matricula = document.getElementById('userSelect') ? document.getElementById('userSelect').value : currentUser.matricula;
   reports.push({data, folha, dinheiro, sf, obs, matricula, posObs:{text:"", images:[]}});
-  saveReports(); if (typeof renderMain === 'function') { renderMain(); };
+if (typeof renderMain === 'function') { renderMain(); }
 }
 function deleteReport(i){
   if(!confirm("Excluir este relatório?")) return;
-  reports.splice(i,1); saveReports(); if (typeof renderMain === 'function') { renderMain(); };
+if (typeof renderMain === 'function') { renderMain(); }
 }
 function toggleReport(i){ document.getElementById('report-'+i)?.classList.toggle('hidden'); }
 
 // List
-const anonFunc = function() { if (typeof renderMain === 'function') { renderMain(); }
+const anonFunc = function() {
+    if (typeof renderMain === 'function') { renderMain(); }
+}
   const isAdmin = admins.includes(currentUser.matricula);
   let top = `<header><h1>Relatório de Diferenças <span class="badge">${isAdmin?'Admin':'Usuário'}</span></h1>
     <div><span class="small">${currentUser.nome} (${currentUser.matricula})</span>
@@ -257,7 +259,7 @@ function filterOlderAdmin(){
                        .sort(byDateDesc).slice(20);
   document.getElementById('olderAdmin').innerHTML = renderReports(older, true, true);
 }
-function openAdminMat(mat){ adminViewMatricula = mat; if (typeof renderMain === 'function') { renderMain(); }; }
+if (typeof renderMain === 'function') { renderMain(); }
 
 renderLogin();
 
@@ -407,9 +409,10 @@ function login() {
                     }
                 }
             }
-            // Aqui você pode chamar if (typeof renderMain === 'function') { renderMain(); } ou outra função para carregar o sistema
-            if (typeof renderMain === "function") {
-                if (typeof renderMain === 'function') { renderMain(); };
+// Aqui você pode chamar;
+if (typeof renderMain === 'function') { renderMain(); }
+if (typeof renderMain === 'function') { renderMain(); }
+if (typeof renderMain === 'function') { renderMain(); }
             }
         } else {
             console.warn("[DEBUG] Senha incorreta para", matricula);
