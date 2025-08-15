@@ -1,3 +1,4 @@
+var usuarioLogadoMatricula = null;
 const app = document.getElementById('app');
 let currentUser = null;
 let reports = JSON.parse(localStorage.getItem('reports_v8') || '[]');
@@ -46,6 +47,7 @@ function register(){
             }
             const dados = doc.data();
             if (dados.senha === senha) {
+            usuarioLogadoMatricula = matricula;
                 alert("Login realizado com sucesso!");
                 renderMain(); // mantém o fluxo atual
             } else {
@@ -382,8 +384,18 @@ function login() {
         console.log("[DEBUG] Dados do usuário encontrado:", dados);
 
         if (dados.senha === senha) {
+            usuarioLogadoMatricula = matricula;
             console.log("[DEBUG] Login bem-sucedido para", matricula);
             alert("Login bem-sucedido!");
+            var sel = document.getElementById('userSelect');
+            if (sel) {
+                for (var i = 0; i < sel.options.length; i++) {
+                    if (sel.options[i].value === matricula) {
+                        sel.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
             var sel = document.getElementById('userSelect');
             if (sel) {
                 for (var i = 0; i < sel.options.length; i++) {
