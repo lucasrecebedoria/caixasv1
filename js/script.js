@@ -35,14 +35,36 @@ function register(){
   users.push({matricula:m,nome:n,senha:s});
   saveUsers(); alert("Usuário cadastrado!"); renderLogin();
 }
-function login(){
-  const m = document.getElementById('matricula').value.trim();
-  const s = document.getElementById('senha').value.trim();
-  const user = users.find(u=>u.matricula===m && u.senha===s);
-  if(!user) return alert("Credenciais inválidas.");
-  currentUser = user;
-  renderMain();
+
+function login() {
+    const matricula = document.getElementById('matricula')?.value || '';
+    const senha = document.getElementById('senha')?.value || '';
+
+    if (!matricula || !senha) {
+        alert("Preencha matrícula e senha.");
+        return;
+    }
+
+    db.collection("usuarios").doc(matricula).get()
+        .then(doc => {
+            if (!doc.exists) {
+                alert("Usuário não encontrado.");
+                return;
+            }
+            const dados = doc.data();
+            if (dados.senha === senha) {
+                alert("Login realizado com sucesso!");
+                renderMain(); // mantém o fluxo atual
+            } else {
+                alert("Senha incorreta.");
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao buscar usuário:", error);
+            alert("Erro no login.");
+        });
 }
+
 function logout(){ currentUser=null; renderLogin(); }
 function changePassword(){
   const nova = prompt("Digite a nova senha:");
@@ -272,5 +294,41 @@ function salvarUsuario() {
     .catch((error) => {
         console.error("Erro ao salvar usuário: ", error);
         alert("Erro ao salvar. Verifique o console.");
+    });
+}
+
+
+function cadastrarUsuario() {
+    const matricula = document.getElementById('matricula')?.value || '';
+    const nome = document.getElementById('nome')?.value || '';
+    const senha = document.getElementById('senha')?.value || '';
+    const data = document.getElementById('data')?.value || '';
+    const folha = parseFloat(document.getElementById('folha')?.value || 0);
+    const dinheiro = parseFloat(document.getElementById('dinheiro')?.value || 0);
+    const obs = document.getElementById('obs')?.value || '';
+    const posObs = document.getElementById('posObsField')?.value || '';
+
+    if (!matricula || !senha) {
+        alert("Matrícula e senha são obrigatórias.");
+        return;
+    }
+
+    db.collection("usuarios").doc(matricula).set({
+        matricula: matricula,
+        nome: nome,
+        senha: senha,
+        data: data,
+        folha: folha,
+        dinheiro: dinheiro,
+        obs: obs,
+        posObs: posObs,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        alert("Usuário cadastrado com sucesso!");
+    })
+    .catch((error) => {
+        console.error("Erro ao cadastrar usuário: ", error);
+        alert("Erro ao cadastrar. Verifique o console.");
     });
 }
