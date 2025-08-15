@@ -14,4 +14,8 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-console.log("[Firebase] Inicializado com sucesso.");
+
+// Tornar db acessível globalmente
+window.db = db;
+
+console.log("[Firebase] Inicializado com sucesso e 'db' exposto globalmente.");
