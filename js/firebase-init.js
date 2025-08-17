@@ -1,9 +1,8 @@
-// firebase-init.js
-
+// js/firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Configuração Firebase
+// Config Firebase (mantendo seu projeto)
 const firebaseConfig = {
   apiKey: "AIzaSyBdmIYK4Zy6MbEsT3pc5W_YkbdKtOUOzto",
   authDomain: "caixas-b09fb.firebaseapp.com",
@@ -14,13 +13,12 @@ const firebaseConfig = {
   measurementId: "G-SSWHWFZ7FT"
 };
 
-// Inicializar Firebase
+// Init
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Expor globalmente
+// Expor globalmente para uso em scripts não-modulares
 window.db = db;
 window._fs = { doc, getDoc, setDoc, collection, addDoc };
 
-console.log("✅ Firebase inicializado com sucesso");
-console.log("[Firebase] db e funções do Firestore expostos em window._fs");
+console.log("✅ Firebase inicializado e exposto: window.db + window._fs");
