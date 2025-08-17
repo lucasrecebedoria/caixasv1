@@ -1,82 +1,74 @@
-// firebase-auth.js
-console.log("[Firebase Auth] Arquivo carregado");
+// =====================
+// Firebase Auth - Firestore baseado
+// =====================
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { app } from "./firebase-init.js";
 
-// Garantir que o Firestore está disponível
-if (!window.db || !window._fs) {
-  console.error("[Firebase Auth] Erro: Firestore não inicializado corretamente no firebase-init.js");
-}
-
-// Extrair helpers expostos globalmente
-const { doc, getDoc, setDoc, collection, addDoc } = window._fs || {};
+const db = getFirestore(app);
+console.log("[Firebase] Firestore inicializado:", db);
 
 // =====================
-// Função para cadastrar usuário
+// Função de cadastro
 // =====================
 async function cadastrarUsuario(matricula, nome, senha) {
+  console.log("[Firebase] Tentando cadastrar usuário:", { matricula, nome });
   try {
-    if (!matricula || !nome || !senha) {
-      alert("⚠️ Preencha todos os campos!");
-      return;
-    }
-
-    const userRef = doc(window.db, "usuarios", matricula);
-    const userSnap = await getDoc(userRef);
-
-    if (userSnap.exists()) {
-      alert("❌ Matrícula já cadastrada!");
+    const ref = doc(db, "usuarios", matricula);
+    const docSnap = await getDoc(ref);
+    if (docSnap.exists()) {
       console.warn("[Firebase] Matrícula já existe:", matricula);
+      alert("Matrícula já cadastrada!");
       return;
     }
 
-    await setDoc(userRef, { matricula, nome, senha });
-    alert("✅ Usuário cadastrado com sucesso!");
-    console.log("[Firebase] Usuário cadastrado:", { matricula, nome });
-  } catch (err) {
-    console.error("[Firebase] Erro ao cadastrar usuário:", err);
-    alert("❌ Erro ao cadastrar usuário: " + err.message);
+    await setDoc(ref, {
+      matricula,
+      nome,
+      senha,
+      criadoEm: new Date().toISOString()
+    });
+    console.log("[Firebase] Usuário cadastrado com sucesso:", matricula);
+    alert("Usuário cadastrado com sucesso!");
+  } catch (e) {
+    console.error("[Firebase] Erro ao cadastrar usuário:", e);
+    alert("Erro ao cadastrar usuário.");
   }
 }
 
 // =====================
-// Função para login de usuário
+// Função de login
 // =====================
 async function loginUsuario(matricula, senha) {
+  console.log("[Firebase] Tentando login:", matricula);
   try {
-    if (!matricula || !senha) {
-      alert("⚠️ Informe matrícula e senha!");
-      return;
-    }
+    const ref = doc(db, "usuarios", matricula);
+    const docSnap = await getDoc(ref);
 
-    const userRef = doc(window.db, "usuarios", matricula);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      alert("❌ Usuário não encontrado!");
+    if (!docSnap.exists()) {
       console.warn("[Firebase] Usuário não encontrado:", matricula);
+      alert("Usuário não encontrado!");
       return;
     }
 
-    const data = userSnap.data();
-    if (data.senha !== senha) {
-      alert("❌ Senha incorreta!");
+    const data = docSnap.data();
+    console.log("[Firebase] Usuário encontrado:", data);
+
+    if (data.senha === senha) {
+      console.log("[Firebase] Login bem-sucedido:", matricula);
+      alert("Login realizado com sucesso!");
+      if (window.renderMain) {
+        window.renderMain(data);
+      }
+    } else {
       console.warn("[Firebase] Senha incorreta para matrícula:", matricula);
-      return;
+      alert("Senha incorreta!");
     }
-
-    alert("✅ Login realizado com sucesso!");
-    console.log("[Firebase] Login OK:", data);
-
-    if (window.renderMain) {
-      window.renderMain(data);
-    }
-  } catch (err) {
-    console.error("[Firebase] Erro no login:", err);
-    alert("❌ Erro no login: " + err.message);
+  } catch (e) {
+    console.error("[Firebase] Erro no login:", e);
+    alert("Erro ao realizar login.");
   }
 }
 
-// Expor globalmente
+// Expor para uso no script.js
 window.cadastrarUsuario = cadastrarUsuario;
 window.loginUsuario = loginUsuario;
-
-console.log("[Firebase Auth] Funções de cadastro/login expostas em window");
