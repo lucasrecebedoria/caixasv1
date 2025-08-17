@@ -1,43 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script>
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-  }
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Relatorio de Diferencas</title>
-  <link rel="stylesheet" href="./css/style.css"/>
-<style>
-  /* Unificar fundo dos campos com o tom do pós conferência (#333) */
-  input#matricula,
-  input#senha,
-  select#userSelect,
-  input#data,
-  input#folha,
-  input#dinheiro,
-  input#obs,
-  textarea#posObsField {
-    background-color: #333 !important;
-    background: #333 !important; /* fallback */
-  }
-</style>
-
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<!-- Inicialização Firebase -->
-<script type="module" src="./firebase-init.js"></script>
-<script type="module" src="./firebase-auth.js"></script>
-
+  <meta charset="UTF-8">
+  <title>Sistema de Relatórios</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <!-- Tela inicial de login/cadastro será renderizada aqui -->
+  </div>
+
+  <!-- Firebase Init deve vir primeiro -->
+  <script type="module" src="./js/firebase-init.js"></script>
+  <!-- Depois o Auth -->
+  <script type="module" src="./js/firebase-auth.js"></script>
+  <!-- Por último o script da UI -->
   <script src="./js/script.js"></script>
 </body>
 </html>

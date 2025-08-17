@@ -1,76 +1,82 @@
-/* firebase-auth.js (sem imports, usa window.db e window._fs) */
-(function(){
-  console.log("[Firebase Auth] Arquivo carregado");
+// firebase-auth.js
+console.log("[Firebase Auth] Arquivo carregado");
 
-  if (!window.db) {
-    console.error("[Firebase Auth] db não disponível na janela. Verifique firebase-init.js");
-    alert("❌ Erro interno: Firestore (db) não carregado.");
-    return;
-  }
+// Garantir que o Firestore está disponível
+if (!window.db || !window._fs) {
+  console.error("[Firebase Auth] Erro: Firestore não inicializado corretamente no firebase-init.js");
+}
 
-  const fns = window._fs || {};
-  const docFn = fns.doc;
-  const getDocFn = fns.getDoc;
-  const setDocFn = fns.setDoc;
+// Extrair helpers expostos globalmente
+const { doc, getDoc, setDoc, collection, addDoc } = window._fs || {};
 
-  if (!docFn || !getDocFn || !setDocFn) {
-    console.error("[Firebase Auth] Funções do Firestore não expostas. Ajuste firebase-init.js para setar window._fs = { doc, getDoc, setDoc }");
-    alert("❌ Erro interno: Funções do Firestore indisponíveis.");
-    return;
-  }
-
-  async function cadastrarUsuario(matricula, nome, senha) {
-    console.log("[Firebase] Tentando cadastrar:", matricula);
-
-    try {
-      const userRef = docFn(db, "usuarios", matricula);
-      const snap = await getDocFn(userRef);
-
-      if (snap.exists()) {
-        console.error("[Firebase] Matrícula já existe:", matricula);
-        alert("❌ Matrícula já cadastrada!");
-        return;
-      }
-
-      await setDocFn(userRef, { matricula, nome, senha });
-      console.log("[Firebase] Usuário cadastrado:", matricula);
-      alert("✅ Usuário cadastrado com sucesso!");
-      if (window.renderLogin) window.renderLogin();
-    } catch (e) {
-      console.error("[Firebase] Erro ao cadastrar usuário:", e);
-      alert("❌ Erro ao cadastrar usuário");
+// =====================
+// Função para cadastrar usuário
+// =====================
+async function cadastrarUsuario(matricula, nome, senha) {
+  try {
+    if (!matricula || !nome || !senha) {
+      alert("⚠️ Preencha todos os campos!");
+      return;
     }
-  }
 
-  async function loginUsuario(matricula, senha) {
-    console.log("[Firebase] Tentando login:", matricula);
+    const userRef = doc(window.db, "usuarios", matricula);
+    const userSnap = await getDoc(userRef);
 
-    try {
-      const userRef = docFn(db, "usuarios", matricula);
-      const snap = await getDocFn(userRef);
-
-      if (!snap.exists()) {
-        console.error("[Firebase] Usuário não encontrado:", matricula);
-        alert("❌ Usuário não encontrado!");
-        return;
-      }
-
-      const dados = snap.data();
-      if (dados.senha === senha) {
-        console.log("[Firebase] Login OK:", dados);
-        alert("✅ Login realizado com sucesso!");
-        if (window.renderMain) window.renderMain(dados);
-      } else {
-        console.error("[Firebase] Senha incorreta para:", matricula);
-        alert("❌ Senha incorreta!");
-      }
-    } catch (e) {
-      console.error("[Firebase] Erro no login:", e);
-      alert("❌ Erro no login");
+    if (userSnap.exists()) {
+      alert("❌ Matrícula já cadastrada!");
+      console.warn("[Firebase] Matrícula já existe:", matricula);
+      return;
     }
-  }
 
-  // Exportar globalmente
-  window.cadastrarUsuario = cadastrarUsuario;
-  window.loginUsuario = loginUsuario;
-})();
+    await setDoc(userRef, { matricula, nome, senha });
+    alert("✅ Usuário cadastrado com sucesso!");
+    console.log("[Firebase] Usuário cadastrado:", { matricula, nome });
+  } catch (err) {
+    console.error("[Firebase] Erro ao cadastrar usuário:", err);
+    alert("❌ Erro ao cadastrar usuário: " + err.message);
+  }
+}
+
+// =====================
+// Função para login de usuário
+// =====================
+async function loginUsuario(matricula, senha) {
+  try {
+    if (!matricula || !senha) {
+      alert("⚠️ Informe matrícula e senha!");
+      return;
+    }
+
+    const userRef = doc(window.db, "usuarios", matricula);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      alert("❌ Usuário não encontrado!");
+      console.warn("[Firebase] Usuário não encontrado:", matricula);
+      return;
+    }
+
+    const data = userSnap.data();
+    if (data.senha !== senha) {
+      alert("❌ Senha incorreta!");
+      console.warn("[Firebase] Senha incorreta para matrícula:", matricula);
+      return;
+    }
+
+    alert("✅ Login realizado com sucesso!");
+    console.log("[Firebase] Login OK:", data);
+
+    if (window.renderMain) {
+      window.renderMain(data);
+    }
+  } catch (err) {
+    console.error("[Firebase] Erro no login:", err);
+    alert("❌ Erro no login: " + err.message);
+  }
+}
+
+// Expor globalmente
+window.cadastrarUsuario = cadastrarUsuario;
+window.loginUsuario = loginUsuario;
+
+console.log("[Firebase Auth] Funções de cadastro/login expostas em window");
