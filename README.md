@@ -1,35 +1,12 @@
-# Projeto Firebase Revisado Final
+# Relatório Carbono Admin v8 - Tema Cromado
 
-## 🚀 Como rodar
-Abra o `index.html` em um servidor (ex: GitHub Pages, Firebase Hosting, ou `live-server` local).  
-**⚠️ Importante:** abrir diretamente via `file://` pode quebrar cookies e Firebase. Sempre use um servidor.
+Versão atualizada com:
+- Tema cromado espelhado.
+- Fundo carbono metálico.
+- Datas no formato DD/MM/AAAA.
+- Estrutura pronta para GitHub Pages.
 
-## 🔑 Regras Firestore (modo teste)
-```js
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}
-```
-⚠️ Apenas para desenvolvimento. Em produção configure autenticação.
-
-## 📂 Estrutura da coleção `usuarios`
-```
-usuarios (Collection)
-  12345 (Document ID = matrícula)
-    {
-      "nome": "Lucas Custodio",
-      "senha": "1234",
-      "criadoEm": "2025-08-17T10:00:00.000Z"
-    }
-```
-
-## 🛠️ Debug
-Veja o console do navegador:
-- `[UI]` → cliques nos botões
-- `[Cadastro]` → tentativas e sucesso de cadastro
-- `[Login]` → tentativas de login, dados recebidos e validação de senha
+## Como rodar no GitHub Pages
+1. Crie um repositório no GitHub e envie estes arquivos.
+2. Vá em **Settings > Pages** e habilite a publicação na branch `main`.
+3. Acesse a URL gerada pelo GitHub Pages para visualizar o site.

@@ -1,12 +1,13 @@
 import { db } from "./firebase-init.js";
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
+// Cadastrar usuário no Firestore
 export async function cadastrarUsuario(matricula, nome, senha) {
   try {
     console.log("[Cadastro] Tentando cadastrar:", matricula, nome);
     const m = String(matricula || "").trim();
-    const s = String(senha || "").trim();
     const n = String(nome || "").trim();
+    const s = String(senha || "").trim();
     if (!m || !s) {
       alert("Preencha matrícula e senha.");
       return;
@@ -18,7 +19,7 @@ export async function cadastrarUsuario(matricula, nome, senha) {
       return;
     }
     await setDoc(ref, { nome: n, senha: s, criadoEm: new Date().toISOString() });
-    console.log("[Cadastro] Documento criado em Firestore:", m);
+    console.log("[Cadastro] Usuário criado no Firestore:", m);
     alert("Usuário cadastrado com sucesso!");
   } catch (err) {
     console.error("Erro ao cadastrar:", err);
@@ -26,6 +27,7 @@ export async function cadastrarUsuario(matricula, nome, senha) {
   }
 }
 
+// Login de usuário no Firestore
 export async function loginUsuario(matricula, senha) {
   try {
     console.log("[Login] Tentando login:", matricula);
@@ -43,13 +45,13 @@ export async function loginUsuario(matricula, senha) {
     }
     const data = snap.data();
     console.log("[Login] Documento encontrado:", data);
-    console.log("[Login] Senha digitada:", s, " | Senha salva:", data.senha);
     if (String(data.senha) !== s) {
       alert("Senha incorreta.");
       return;
     }
     alert("Login realizado com sucesso!");
     if (typeof window.renderMain === "function") {
+      console.log("[Login] Chamando renderMain()...");
       window.renderMain({ matricula: m, ...data });
     }
   } catch (err) {
@@ -60,4 +62,4 @@ export async function loginUsuario(matricula, senha) {
 
 window.cadastrarUsuario = cadastrarUsuario;
 window.loginUsuario = loginUsuario;
-console.log("[Firebase] cadastrarUsuario/loginUsuario prontos");
+console.log("[Firebase] cadastrarUsuario e loginUsuario disponíveis");

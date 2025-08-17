@@ -14,4 +14,4 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 window.db = db;
-console.log("[Firebase] Inicializado e 'db' global");
+console.log("[Firebase] Inicializado com Firestore");
