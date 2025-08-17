@@ -1,39 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Relatorio de Diferencas</title>
-  <link rel="stylesheet" href="css/style.css"/>
-<style>
-  /* Unificar fundo dos campos com o tom do pós conferência (#333) */
-  input#matricula,
-  input#senha,
-  select#userSelect,
-  input#data,
-  input#folha,
-  input#dinheiro,
-  input#obs,
-  textarea#posObsField {
-    background-color: #333 !important;
-    background: #333 !important; /* fallback */
-  }
-</style>
-
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<!-- Inicialização Firebase -->
-
+  <meta charset="UTF-8">
+  <title>Caixas V1</title>
+  <style>
+    body { background:#222; color:#fff; font-family:sans-serif; text-align:center; padding:40px; }
+    input { display:block; margin:10px auto; padding:10px; background:#333; color:#fff; border:none; border-radius:5px; }
+    button { padding:10px 20px; margin:5px; border:none; border-radius:5px; cursor:pointer; }
+    .btn-login { background:#4caf50; color:#fff; }
+    .btn-register { background:#2196f3; color:#fff; }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
-  <script src="js/script.js"></script>
+  <h1>Sistema de Caixas</h1>
+  <input id="matricula" placeholder="Matrícula">
+  <input id="nome" placeholder="Nome (para cadastro)">
+  <input id="senha" type="password" placeholder="Senha">
+  <button class="btn-login" onclick="login()">Login</button>
+  <button class="btn-register" onclick="register()">Cadastrar</button>
 
   <script type="module" src="./js/firebase-init.js"></script>
   <script type="module" src="./js/firebase-auth.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>
