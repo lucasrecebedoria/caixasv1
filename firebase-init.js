@@ -19,3 +19,6 @@ export const db = getFirestore(app);
 window.db = db;
 
 console.log("[Firebase] Inicializado com sucesso e 'db' exposto globalmente.");
+
+
+console.log('✅ Firebase carregado com sucesso');
