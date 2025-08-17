@@ -22,3 +22,16 @@ console.log("[Firebase] Inicializado com sucesso e 'db' exposto globalmente.");
 
 
 console.log('✅ Firebase carregado com sucesso');
+
+
+/* Expor helpers do Firestore globalmente para scripts não-module */
+try {
+  if (typeof doc !== "undefined" && typeof getDoc !== "undefined" && typeof setDoc !== "undefined") {
+    window._fs = { doc, getDoc, setDoc };
+    console.log("[Firebase] Helpers do Firestore expostos em window._fs");
+  } else {
+    console.warn("[Firebase] doc/getDoc/setDoc não detectados aqui.");
+  }
+} catch (e) {
+  console.warn("[Firebase] Falha ao expor helpers:", e);
+}
