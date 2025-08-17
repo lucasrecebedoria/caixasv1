@@ -26,7 +26,13 @@ function renderRegister(){
 }
 
 // Auth
-function register(){
+function register() {
+  const matricula = document.getElementById('matricula').value;
+  const nome = document.getElementById('nome').value;
+  const senha = document.getElementById('senha').value;
+  console.log('[UI] Cadastro acionado', matricula);
+  if (window.cadastrarUsuario) window.cadastrarUsuario(matricula, nome, senha);
+}
   const m = document.getElementById('matricula').value.trim();
   const n = document.getElementById('nome').value.trim();
   const s = document.getElementById('senha').value.trim();
@@ -37,6 +43,11 @@ function register(){
 }
 
 function login() {
+  const matricula = document.getElementById('matricula').value;
+  const senha = document.getElementById('senha').value;
+  console.log('[UI] Login acionado', matricula);
+  if (window.loginUsuario) window.loginUsuario(matricula, senha);
+}
     const matricula = document.getElementById('matricula')?.value || '';
     const senha = document.getElementById('senha')?.value || '';
 
@@ -45,7 +56,6 @@ function login() {
         return;
     }
 
-    db.collection("usuarios").doc(matricula).get()
         .then(doc => {
             if (!doc.exists) {
                 alert("Usuário não encontrado.");
@@ -278,7 +288,6 @@ function salvarUsuario() {
         return;
     }
 
-    db.collection("usuarios").doc(matricula).set({
         matricula: matricula,
         nome: nome,
         data: data,
@@ -298,7 +307,13 @@ function salvarUsuario() {
 }
 
 
-function cadastrarUsuario() {
+function register() {
+  const matricula = document.getElementById('matricula').value;
+  const nome = document.getElementById('nome').value;
+  const senha = document.getElementById('senha').value;
+  console.log('[UI] Cadastro acionado', matricula);
+  if (window.cadastrarUsuario) window.cadastrarUsuario(matricula, nome, senha);
+}
     const matricula = document.getElementById('matricula')?.value || '';
     const nome = document.getElementById('nome')?.value || '';
     const senha = document.getElementById('senha')?.value || '';
@@ -313,7 +328,6 @@ function cadastrarUsuario() {
         return;
     }
 
-    db.collection("usuarios").doc(matricula).set({
         matricula: matricula,
         nome: nome,
         senha: senha,
