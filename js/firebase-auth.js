@@ -1,54 +1,45 @@
-// js/firebase-auth.js
-console.log("[Firebase Auth] Carregado");
+// [Firebase Auth] Arquivo carregado com logs de depuração
 
-if (!window.db || !window._fs) {
-  console.error("[Firebase Auth] Firestore não inicializado (verifique firebase-init.js).");
-}
-
-const { doc, getDoc, setDoc } = window._fs || {};
-
-// Cadastrar usuário em usuarios/{matricula}
+// Função de cadastro de usuário
 async function cadastrarUsuario(matricula, nome, senha) {
+  console.log("[Auth] Tentando cadastrar:", matricula, nome);
   try {
-    if (!matricula || !nome || !senha) {
-      alert("⚠️ Preencha matrícula, nome e senha.");
-      return;
-    }
-    const userRef = doc(window.db, "usuarios", matricula);
-    const snap = await getDoc(userRef);
+    const userRef = window._fs.doc(window.db, "usuarios", matricula);
+    const snap = await window._fs.getDoc(userRef);
     if (snap.exists()) {
+      console.warn("[Auth] Documento já existe:", matricula);
       alert("❌ Matrícula já cadastrada.");
       return;
     }
-    await setDoc(userRef, { matricula, nome, senha });
+    await window._fs.setDoc(userRef, { matricula, nome, senha });
+    console.log("[Auth] Usuário cadastrado com sucesso:", { matricula, nome });
     alert("✅ Usuário cadastrado com sucesso.");
-    console.log("[Firestore] Cadastrado:", { matricula, nome });
   } catch (e) {
     console.error("[Firestore] Erro ao cadastrar:", e);
     alert("❌ Erro ao cadastrar: " + e.message);
   }
 }
 
-// Login: compara senha do documento usuarios/{matricula}
+// Função de login
 async function loginUsuario(matricula, senha) {
+  console.log("[Auth] Tentando login:", matricula);
   try {
-    if (!matricula || !senha) {
-      alert("⚠️ Informe matrícula e senha.");
-      return;
-    }
-    const userRef = doc(window.db, "usuarios", matricula);
-    const snap = await getDoc(userRef);
+    const userRef = window._fs.doc(window.db, "usuarios", matricula);
+    const snap = await window._fs.getDoc(userRef);
     if (!snap.exists()) {
+      console.warn("[Auth] Usuário não encontrado:", matricula);
       alert("❌ Usuário não encontrado.");
       return;
     }
     const data = snap.data();
+    console.log("[Auth] Usuário encontrado:", data);
     if (data.senha !== senha) {
+      console.warn("[Auth] Senha incorreta para matrícula:", matricula);
       alert("❌ Senha incorreta.");
       return;
     }
+    console.log("[Auth] Login OK:", data);
     alert("✅ Login realizado com sucesso.");
-    console.log("[Firestore] Login OK:", data);
     if (window.renderMain) window.renderMain(data);
   } catch (e) {
     console.error("[Firestore] Erro no login:", e);
@@ -56,6 +47,6 @@ async function loginUsuario(matricula, senha) {
   }
 }
 
-// Expor globalmente para seu script.js atual
+// Expor para uso no script.js
 window.cadastrarUsuario = cadastrarUsuario;
 window.loginUsuario = loginUsuario;
