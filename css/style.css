@@ -13,7 +13,7 @@ header h1{margin:0;font-weight:800;letter-spacing:.5px}
 .badge{display:inline-block;padding:2px 8px;border:1px solid var(--border);border-radius:999px;margin-left:8px;color:var(--green)}
 .container{max-width:980px;margin:0 auto;padding:20px}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;margin:10px 0;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-input,select,textarea,button{border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);padding:10px 12px}
+input,select,textarea,button{border-radius:12px;border:1px solid var(--border);background:#222;color:#fff;padding:10px 12px}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(0,255,102,.2)}
 button{cursor:pointer;font-weight:700;transition:.25s;background:linear-gradient(180deg,#0f0f0f,#141414);color:#00ff66}
 button:hover{filter:brightness(1.2)}
@@ -73,7 +73,7 @@ button:hover {
 h1, h2, h3, label {
     background: linear-gradient(to right, #f0f0f0, #a0a0a0, #f0f0f0);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    
 }
 
 #pos-conferencia, .pos-conferencia { color: #fff !important; }

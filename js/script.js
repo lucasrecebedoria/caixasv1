@@ -1,3 +1,5 @@
+console.log('✅ script.js carregado com sucesso');
+
 // =====================
 // Funções de Login/Cadastro (Firebase)
 // =====================
