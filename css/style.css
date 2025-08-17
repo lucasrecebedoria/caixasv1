@@ -126,3 +126,45 @@ h1, h2, h3, label {
   -webkit-text-fill-color:#fff !important;
   caret-color:#fff !important;
 }
+
+
+/* ===== Estilo Login ===== */
+.login-container {
+  max-width: 320px;
+  margin: 80px auto;
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+  text-align: center;
+}
+
+.login-container h2 {
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.login-container input {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px;
+  border-radius: 6px;
+  width: 100%;
+  margin: 6px 0;
+}
+
+.login-container button {
+  background: linear-gradient(145deg, #555, #222);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  margin: 6px 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-container button:hover {
+  background: linear-gradient(145deg, #666, #333);
+}

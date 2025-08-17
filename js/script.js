@@ -42,3 +42,30 @@ function renderMain(usuario) {
 }
 
 window.renderMain = renderMain;
+
+// =====================
+// Função de Login (UI)
+// =====================
+function renderLogin() {
+  console.log("✅ Tela de login renderizada");
+
+  document.getElementById("app").innerHTML = `
+    <div class="login-container">
+      <h2>Acesso ao Sistema</h2>
+      <input id="matricula" placeholder="Matrícula">
+      <input id="nome" placeholder="Nome (para cadastro)">
+      <input id="senha" type="password" placeholder="Senha">
+      <div class="buttons">
+        <button onclick="login()">Entrar</button>
+        <button onclick="register()">Criar Conta</button>
+      </div>
+    </div>
+  `;
+}
+
+// Forçar tela de login ao carregar
+window.addEventListener("DOMContentLoaded", () => {
+  if (typeof renderLogin === "function") {
+    renderLogin();
+  }
+});
