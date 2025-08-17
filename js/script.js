@@ -33,7 +33,7 @@ function register() {
 function renderMain(usuario) {
   console.log("[App] Entrando em renderMain com usuário:", usuario);
   document.body.innerHTML = `
-    <div class="container">
+    <div class="relatorio-container">
       <h1>Relatórios</h1>
       <p>Bem-vindo, ${usuario.nome} (Matrícula: ${usuario.matricula})</p>
       <!-- resto da sua UI aqui -->
@@ -51,13 +51,12 @@ function renderLogin() {
 
   document.getElementById("app").innerHTML = `
     <div class="login-container">
-      <h2>Acesso ao Sistema</h2>
+      <h2>Entrar</h2>
       <input id="matricula" placeholder="Matrícula">
-      <input id="nome" placeholder="Nome (para cadastro)">
       <input id="senha" type="password" placeholder="Senha">
       <div class="buttons">
         <button onclick="login()">Entrar</button>
-        <button onclick="register()">Criar Conta</button>
+        <button onclick="renderRegister()">Criar Conta</button>
       </div>
     </div>
   `;
@@ -69,3 +68,21 @@ window.addEventListener("DOMContentLoaded", () => {
     renderLogin();
   }
 });
+
+
+function renderRegister() {
+  console.log("✅ Tela de cadastro renderizada");
+
+  document.getElementById("app").innerHTML = `
+    <div class="register-container">
+      <h2>Criar Conta</h2>
+      <input id="matricula" placeholder="Matrícula">
+      <input id="nome" placeholder="Nome completo">
+      <input id="senha" type="password" placeholder="Senha">
+      <div class="buttons">
+        <button onclick="register()">Cadastrar</button>
+        <button onclick="renderLogin()">Voltar</button>
+      </div>
+    </div>
+  `;
+}
